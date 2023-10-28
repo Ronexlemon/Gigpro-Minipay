@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useContractWrite } from "wagmi";
 import { GigProContract } from "../Constant/gigprocontract";
@@ -6,6 +6,8 @@ import gigproAbi from "../ABI/GigPro.json";
 import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import {celoABI,CusdABI } from "../ABI/abi";
+import { BigNumber } from "ethers";
+
 const AccountCards = () => {
   const [approveAmount, setApproveAmount] = useState("");
   const [upgradeAmount, setUpgradeAmount] = useState("");
@@ -15,6 +17,8 @@ const AccountCards = () => {
   const [downgrade, setdowngrade] = useState(
     false
   );
+  const [usercsdBalance,setUserCusdBalance] = useState();
+  const [usercusdxbalance,setcusdxBalance] = useState();
 
   async function approveTokenss(amount) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -51,6 +55,49 @@ const AccountCards = () => {
           `Congrats, you just approved your Cusd spend. You can see this tx at https://celoscan.io/address/${tx.hash}`
         );
       });
+    } catch (error) {
+      console.log(
+        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+      );
+      console.error(error);
+    }
+  }
+  //getbalance
+  async function getUserBalance() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+  
+    const signer = provider.getSigner();
+  
+    // const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    // console.log("the chain id is",Number(chainId))
+    // const sf = await Framework.create({
+    //   chainId: Number(chainId),
+    //   provider: provider
+    // });
+  
+    // const superSigner = sf.createSigner({ signer: signer });
+  
+    // console.log(signer);
+    // console.log(await superSigner.getAddress());
+  
+    //fDAI on goerli: you can find network addresses here: https://docs.superfluid.finance/superfluid/developers/networks
+    //note that this abi is the one found here: https://goerli.etherscan.io/address/0x88271d333C72e51516B67f5567c728E702b3eeE8
+    const CUSD = new ethers.Contract(
+      "0x765de816845861e75a25fca122bb6898b8b1282a",
+      CusdABI,
+      provider
+    );
+    try {
+      console.log("approving CUSD spend");
+    const bal =  await CUSD.balanceOf(
+        signer.getAddress()   
+      );
+     
+      
+      const userbal = bal.toString()/10**18;
+      setUserCusdBalance(userbal);
+      console.log("user balance",userbal);
     } catch (error) {
       console.log(
         "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
@@ -156,6 +203,57 @@ async function downgradeTokens(amount) {
       console.error(error);
     }
   }
+  //get user cUsdx balance
+  async function getUserCusdxBalance() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+  
+    const signer = provider.getSigner();
+    console.log("usesrs address",await signer.getAddress())
+  
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const sf = await Framework.create({
+      chainId: Number(chainId),
+      provider: provider
+    });
+  
+    const superSigner = sf.createSigner({ signer: signer });
+  
+    console.log(signer);
+    console.log(await superSigner.getAddress());
+    const celox = await sf.loadSuperToken("cUSDx");
+  
+    console.log(celox);
+  
+    try {
+      // const downgradeOperation = celox.downgrade({
+      //   amount: ethers.utils.parseEther(amount)
+      // });
+      const userbalancercusdx = celox.balanceOf({
+        account: await signer.getAddress(),
+        providerOrSigner:provider
+      }
+       
+            )
+  
+      
+  
+     // const bal = await userbalancercusdx.exec(signer);
+     const userbal = await userbalancercusdx;
+     setcusdxBalance(userbal/10**18);
+  
+      console.log(
+        "uer balance",  userbal/10**18
+      );
+  
+      
+    } catch (error) {
+      console.log(
+        "cusdx balance failed!"
+      );
+      console.error(error);
+    }
+  }
   
   async function approveTokens(amount) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -211,15 +309,23 @@ async function downgradeTokens(amount) {
   const handleDowngradeAmountChange = (e) => {
     setDowngradeAmount(e.target.value);
   };
+  useEffect(()=>{
+getUserBalance();
+getUserCusdxBalance();
+  },[])
   return (
-    <div className="flex justify-between gap-16 w-full  grid grid-column items-center  h-full">
+    <div className="flex justify-between gap-8 w-full  grid grid-column items-center  h-full">
   <div className="w-80 h-70 flex flex-col justify-between rounded-xl bg-gray-300">
     <h2 className="text-center text-xl font-semibold mb-5">Cusd to Cusdx</h2>
-    <div className="flex h-full flex-col gap-20 pt-5">
+    <div className="flex h-full flex-col gap-12 pt-5">
      
       <div className="flex justify-evenly items-center">
         <h3>CUSD:</h3>
         <input className="border-b w-40 border-black bg-transparent focus:border-none text-center " type="text" placeholder="4000" onChange={handleApproveAmountChange}/>
+      </div>
+      <div className="flex justify-between items-center ml-4 mr-4">
+        <h2>  cUSD balance</h2>
+        <h2>{usercsdBalance}</h2>
       </div>
       <div className="flex justify-center items-center text-black pl-10 pr-10 mb-4">
       {approve?<button onClick={()=>{upgradeTokens(approveAmount)}} className="inline-flex p-2 justify-center items-center w-20 rounded-full bg-green-400">Wrap</button>:<button onClick={()=>{approveTokenss(approveAmount);
@@ -234,11 +340,15 @@ async function downgradeTokens(amount) {
 
   <div className="w-full h-full flex flex-col justify-between rounded-xl bg-gray-300">
     <h2 className="text-center text-xl font-semibold mb-5">cUSDx to cUSD</h2>
-    <div className="flex h-full flex-col gap-20 pt-5">
+    <div className="flex h-full flex-col gap-12 pt-5">
      
       <div className="flex justify-evenly items-center">
         <h3>cUSDx:</h3>
         <input className="border-b border-black bg-transparent w-40 focus:border-none text-center " type="text" placeholder="4000" onChange={handleDowngradeAmountChange}/>
+      </div>
+      <div className="flex justify-between items-center ml-4 mr-4">
+        <h2> cUSDx balance</h2>
+        <h2>{usercusdxbalance}</h2>
       </div>
       <div className="flex justify-center items-center text-black pl-10 pr-10 mb-4">
       <button onClick={()=>{downgradeTokens(downgradeAmount)}}  className="inline-flex p-2 justify-center items-center w-20 rounded-full bg-red-200">Unwrap</button>

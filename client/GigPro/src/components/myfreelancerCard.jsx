@@ -5,6 +5,7 @@ import { GigProContract } from "../Constant/gigprocontract";
 import gigproAbi from "../ABI/GigPro.json";
 import { useAccount } from 'wagmi'
 import { ethers,Contract } from "ethers";
+import { Framework } from "@superfluid-finance/sdk-core";
 
 
 const MyFreelancerCard = () => {
@@ -37,6 +38,73 @@ const MyFreelancerCard = () => {
       console.error("MiniPay provider not detected");
   }
 }
+async function getUserFlow(recipient) {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+
+  const signer = provider.getSigner();
+
+  const chainId = await window.ethereum.request({ method: "eth_chainId" });
+  const sf = await Framework.create({
+    chainId: Number(chainId),
+    provider: provider
+  });
+
+  const superSigner = sf.createSigner({ signer: signer });
+
+  console.log(signer);
+  console.log(await superSigner.getAddress());
+  //const daix = await sf.loadSuperToken("MATICx");
+  const daix = await sf.loadSuperToken("cUSDx");
+  
+
+  console.log("celo cusd",daix);
+
+  try {
+    if (!provider) {
+      console.log("Provider not initialized yet");
+      return;
+      }
+    const deleteFlowOperation =daix.getNetFlow({
+      //sender: await superSigner.getAddress(),
+      superToken: daix.address,
+      receiver: recipient,
+      providerOrSigner: signer
+      // userData?: string
+    });
+
+    console.log("user balance",deleteFlowOperation);
+    console.log("Creating your stream...");
+
+    const result = await deleteFlowOperation.exec(superSigner);
+    console.log(result);
+
+    console.log(
+      `Congrats - you've just End Stream  a money stream!
+    `
+    );
+  } catch (error) {
+    console.log(
+      "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+    );
+    console.error(error);
+  }
+}
+//handle new stream
+    const handleStartStream = async(freeLancerAddress,wei_per_seconds)=>{
+      try{
+        if(freeLancerAddress != undefined ){
+          
+          await createNewFlow(freeLancerAddress);
+          setOpen(false);
+        }else{
+          alert("please provide the time");
+        }
+       
+      }catch(err){
+        console.log("error is", err);
+      }
+    }
   
   // const { data:myFreelancers, isError, isLoading } = useContractRead({
   //   address: GigProContract,
@@ -107,8 +175,10 @@ const removeFreeeLancer = async()=>{
     { address: '0x8878787874827487vdfjdfywetf6f23276r', amount: '4000' },
     { address: '0x8878787874827487vdfjdfywetf6f23276r', amount: '4000' },
   ];
+  const addis ="0x65E28C9C4Ef1a756d8df1c507b7A84eFcF606fd4"
  useEffect(()=>{
-  getFreelancers()
+  getFreelancers();
+  //getUserFlow(addis);
  },[address]);
   return (
     <>
