@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import {celoABI,CusdABI } from "../ABI/abi";
 import { BigNumber } from "ethers";
+import Tosts from "./Toast";
 
 const AccountCards = () => {
   const [approveAmount, setApproveAmount] = useState("");
@@ -19,6 +20,9 @@ const AccountCards = () => {
   );
   const [usercsdBalance,setUserCusdBalance] = useState();
   const [usercusdxbalance,setcusdxBalance] = useState();
+  const [toastopen, setTost] = useState(false);
+  const [toastDownopen, setDownGradeTost] = useState(false);
+  const [toastApproving, setApprovingTost] = useState(false);
 
   async function approveTokenss(amount) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -47,6 +51,7 @@ const AccountCards = () => {
     );
     try {
       console.log("approving CUSD spend");
+      setApprovingTost(true);
       await CUSD.approve(
         "0x3acb9a08697b6db4cd977e8ab42b6f24722e6d6e",
         ethers.utils.parseEther(amount.toString())
@@ -55,6 +60,10 @@ const AccountCards = () => {
           `Congrats, you just approved your Cusd spend. You can see this tx at https://celoscan.io/address/${tx.hash}`
         );
       });
+      
+      setTimeout(()=>{
+setApprovingTost(false);
+      },6000)
     } catch (error) {
       console.log(
         "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
@@ -133,6 +142,10 @@ const AccountCards = () => {
           console.log("Upgrading...");
       
           await upgradeOperation.exec(signer);
+          setTost(true);
+        setTimeout(()=>{
+setTost(false);
+        },6000)
       
           console.log(
             `Congrats - you've just upgraded your tokens to an Index!
@@ -183,6 +196,10 @@ async function downgradeTokens(amount) {
       console.log("downgrading...");
   
       await downgradeOperation.exec(signer);
+      setDownGradeTost(true);
+        setTimeout(()=>{
+setDownGradeTost(false);
+        },6000)
   
       console.log(
         `Congrats - you've just downgraded your tokens
@@ -254,6 +271,66 @@ async function downgradeTokens(amount) {
       console.error(error);
     }
   }
+  //get user stream
+  async function getUserCusdxStream() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+  
+    const signer = provider.getSigner();
+    console.log("usesrs address",await signer.getAddress())
+  
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const sf = await Framework.create({
+      chainId: Number(chainId),
+      provider: provider
+    });
+  
+    const superSigner = sf.createSigner({ signer: signer });
+  
+    console.log(signer);
+    console.log(await superSigner.getAddress());
+    const celox = await sf.loadSuperToken("cUSDx");
+  
+    console.log(celox);
+  
+    try {
+      // const downgradeOperation = celox.downgrade({
+      //   amount: ethers.utils.parseEther(amount)
+      // });
+      const userbalancercusdx = celox.realtimeBalanceOf({
+        account: "0xdf089f52f9d8fcc320d6dc97afc1098e88d85f0f",
+        providerOrSigner:provider,
+        timestamp:Date.now()
+      }
+            
+            )
+            const userflow = celox.getFlow({
+               sender: await signer.getAddress(),
+              receiver: "0xdf089f52f9d8fcc320d6dc97afc1098e88d85f0f",
+              providerOrSigner:provider,
+              
+            })
+  
+      
+  
+    //  // const bal = await userbalancercusdx.exec(signer);
+    //  const userbal = await userbalancercusdx;
+    //  setcusdxBalance(userbal/10**18);
+    const firstElement = await userbalancercusdx;
+  
+      console.log(
+        "uer balance now",  firstElement.availableBalance
+      );
+ // console.log("userFlow",(await userflow).deposit);
+ console.log("useflow rate",await userflow)
+      
+    } catch (error) {
+      console.log(
+        "cusdx balance failed!"
+      );
+      console.error(error);
+    }
+  }
   
   async function approveTokens(amount) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -312,18 +389,24 @@ async function downgradeTokens(amount) {
   useEffect(()=>{
 getUserBalance();
 getUserCusdxBalance();
+getUserCusdxStream()
   },[])
   return (
-    <div className="flex justify-between gap-8 w-full  grid grid-column items-center  h-full">
-  <div className="w-80 h-70 flex flex-col justify-between rounded-xl bg-gray-300">
-    <h2 className="text-center text-xl font-semibold mb-5">Cusd to Cusdx</h2>
+    <div className="flex justify-between gap-8 w-full  grid grid-column items-center  h-full relative">
+ <div className="absolute top-0 left-0 z-10 text-gray-200">
+        {toastopen?<Tosts message="Success cUSD Swaping" />:""}
+        {toastApproving?<Tosts message="Approving ..." />:""}
+       {/* Tosts component is placed here */}
+      </div>
+  <div className="w-80 h-70 flex flex-col justify-between rounded-xl bg-black relative z-0">
+    <h2 className="text-center text-xl font-semibold mb-5 text-gray-200">Cusd to Cusdx</h2>
     <div className="flex h-full flex-col gap-12 pt-5">
      
-      <div className="flex justify-evenly items-center">
+      <div className="flex justify-evenly items-center text-gray-200">
         <h3>CUSD:</h3>
-        <input className="border-b w-40 border-black bg-transparent focus:border-none text-center " type="text" placeholder="4000" onChange={handleApproveAmountChange}/>
+        <input className="border-b w-40 border-gray-100 bg-transparent focus:border-none text-center text-white " type="text" placeholder="4000" onChange={handleApproveAmountChange}/>
       </div>
-      <div className="flex justify-between items-center ml-4 mr-4">
+      <div className="flex justify-between items-center ml-4 mr-4 text-gray-200">
         <h2>  cUSD balance</h2>
         <h2>{usercsdBalance}</h2>
       </div>
@@ -338,15 +421,19 @@ getUserCusdxBalance();
     </div>
   </div>
 
-  <div className="w-full h-full flex flex-col justify-between rounded-xl bg-gray-300">
-    <h2 className="text-center text-xl font-semibold mb-5">cUSDx to cUSD</h2>
+  <div className="w-full h-full flex flex-col justify-between rounded-xl bg-black relative z-0">
+  <div className="absolute top-0 left-0 z-10 text-gray-200">
+        {toastDownopen?<Tosts message="Success cUSDX Swaping" />:""}
+       {/* Tosts component is placed here */}
+      </div>
+    <h2 className="text-center text-xl font-semibold mb-5 text-gray-200">cUSDx to cUSD</h2>
     <div className="flex h-full flex-col gap-12 pt-5">
      
-      <div className="flex justify-evenly items-center">
+      <div className="flex justify-evenly items-center text-gray-200">
         <h3>cUSDx:</h3>
-        <input className="border-b border-black bg-transparent w-40 focus:border-none text-center " type="text" placeholder="4000" onChange={handleDowngradeAmountChange}/>
+        <input className="border-b border-gray-100 bg-transparent w-40 focus:border-none text-center text-white" type="text" placeholder="4000" onChange={handleDowngradeAmountChange}/>
       </div>
-      <div className="flex justify-between items-center ml-4 mr-4">
+      <div className="flex justify-between items-center ml-4 mr-4 text-gray-200">
         <h2> cUSDx balance</h2>
         <h2>{usercusdxbalance}</h2>
       </div>

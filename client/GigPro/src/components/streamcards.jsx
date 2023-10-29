@@ -4,6 +4,14 @@ import { GigProContract } from "../Constant/gigprocontract";
 import gigproAbi from "../ABI/GigPro.json";
 import { useAccount } from 'wagmi'
 
+
+
+
+
+import {celoABI,CusdABI } from "../ABI/abi";
+
+
+
 //superfluid
 //import { Framework } from "@superfluid-finance/js-sdk";
 import { Framework } from "@superfluid-finance/sdk-core";
@@ -24,7 +32,7 @@ const StreamCard = () => {
   const [openUpdate,setopenUpdate] = useState(false);
 
   const  getFreelancers = async()=>{
-    if (window.ethereum || window.ethereum.isMiniPay) {
+    if (window.ethereum || window.ethereum.isMinipay) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await  provider.getSigner(address);
       console.log("address yollow",await signer.getAddress());
@@ -125,8 +133,8 @@ const StreamCard = () => {
       console.log(createFlowOperation);
       console.log("Creating your stream...");
   
-      const result = await createFlowOperation.exec(superSigner);
-      console.log(result);
+      const result = (await createFlowOperation.exec(superSigner));
+      console.log("gassss",result);
   
       console.log(
         `Congrats - you've just created a money stream!
@@ -178,7 +186,7 @@ async function endStreamFlow(recipient) {
     console.log(deleteFlowOperation);
     console.log("Creating your stream...");
 
-    const result = await deleteFlowOperation.exec(superSigner);
+    const result = (await deleteFlowOperation.exec(superSigner));
     console.log(result);
 
     console.log(
@@ -365,7 +373,7 @@ async function updateStreamFlow(recipient) {
           <button className="text-red-200 md:text-xl  text-xs" onClick={()=>{setUpdateCardIndex(null)}} >Cancel</button></div>:""}
          
         </div>
-         
+       
         </div>
       ))}
     </>

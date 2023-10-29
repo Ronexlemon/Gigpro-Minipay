@@ -129,7 +129,7 @@ useEffect(()=>{
   return (
     <>
       {freelancers?.map((employee, index) => (
-        <div key={index} className="flex h-1/4 flex-col mb-10 w-full  text-gray-400 mb-0 border-b border-red-300 ">
+        <div key={index} className="flex h-1/4 flex-col mb-10 w-full  text-gray-200 mb-0 border-b border-red-300  ">
           <div className="flex md:justify-evenly md:w-full md:flex-row justify-center  w-full flex-col  text-sm gap-4 items-center">
             <h3>FreeLancer Address: </h3>
             <span className="flex">

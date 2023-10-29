@@ -13,6 +13,7 @@ const MyFreelancerCard = () => {
   const [freeLancerAddress,setFreelancerAddress] = useState();
   const [deleteuser,setDeleteUser] = useState(true);
   const { address, connector, isConnected } = useAccount();
+  const [userstreambal,setUserStreamBal]= useState();
   const  getFreelancers = async()=>{
     if (window.ethereum || window.ethereum.isMiniPay) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -38,11 +39,14 @@ const MyFreelancerCard = () => {
       console.error("MiniPay provider not detected");
   }
 }
-async function getUserFlow(recipient) {
+
+//userflow new
+async function getUserCusdxStream() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
 
   const signer = provider.getSigner();
+  console.log("usesrs address",await signer.getAddress())
 
   const chainId = await window.ethereum.request({ method: "eth_chainId" });
   const sf = await Framework.create({
@@ -54,42 +58,50 @@ async function getUserFlow(recipient) {
 
   console.log(signer);
   console.log(await superSigner.getAddress());
-  //const daix = await sf.loadSuperToken("MATICx");
-  const daix = await sf.loadSuperToken("cUSDx");
-  
+  const celox = await sf.loadSuperToken("cUSDx");
 
-  console.log("celo cusd",daix);
+  console.log(celox);
 
   try {
-    if (!provider) {
-      console.log("Provider not initialized yet");
-      return;
-      }
-    const deleteFlowOperation =daix.getNetFlow({
-      //sender: await superSigner.getAddress(),
-      superToken: daix.address,
-      receiver: recipient,
-      providerOrSigner: signer
-      // userData?: string
-    });
+    // const downgradeOperation = celox.downgrade({
+    //   amount: ethers.utils.parseEther(amount)
+    // });
+    const userbalancercusdx = celox.realtimeBalanceOf({
+      account: "0xdf089f52f9d8fcc320d6dc97afc1098e88d85f0f",
+      providerOrSigner:provider,
+      timestamp:Date.now()
+    }
+          
+          )
+          
+          const userflow = celox.getFlow({
+            sender: await signer.getAddress(),
+            receiver: "0xdf089f52f9d8fcc320d6dc97afc1098e88d85f0f",
+            providerOrSigner:provider,
+            
+          })
 
-    console.log("user balance",deleteFlowOperation);
-    console.log("Creating your stream...");
+    
 
-    const result = await deleteFlowOperation.exec(superSigner);
-    console.log(result);
+  //  // const bal = await userbalancercusdx.exec(signer);
+  //  const userbal = await userbalancercusdx;
+  //  setcusdxBalance(userbal/10**18);
+  const firstElement = await userbalancercusdx;
 
     console.log(
-      `Congrats - you've just End Stream  a money stream!
-    `
+      "uer balance now",  firstElement.availableBalance
     );
+    setUserStreamBal(firstElement.availableBalance);
+/// console.log("userFlow",(await userflow).deposit);
+    
   } catch (error) {
     console.log(
-      "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+      "cusdx balance failed!"
     );
     console.error(error);
   }
 }
+
 //handle new stream
     const handleStartStream = async(freeLancerAddress,wei_per_seconds)=>{
       try{
@@ -178,13 +190,19 @@ const removeFreeeLancer = async()=>{
   const addis ="0x65E28C9C4Ef1a756d8df1c507b7A84eFcF606fd4"
  useEffect(()=>{
   getFreelancers();
+  // const interval = setInterval(() => {
+  //   getUserCusdxStream();
+  // }, 1000); // 1000 milliseconds = 1 second
+  
+  // // Cleanup the interval when the component unmounts
+  // return () => clearInterval(interval);
   //getUserFlow(addis);
  },[address]);
   return (
     <>
       {freelancers?.map((employee, index) => (
-        <div key={index} className="flex h-1/4 flex-col mb-10 md:w-full w-3/4 text-gray-400 mb-0 border-b border-red-300   ">
-          <div className="flex md:justify-evenly md:w-full md:flex-row  w-full flex-col md:text-xl text-sm gap-4 items-center">
+        <div key={index} className="flex h-1/4 flex-col mb-10 md:w-full w-3/4 text-gray-400 mb-0 border-b border-red-300 bg-black   ">
+          <div className="flex md:justify-evenly md:w-full md:flex-row  w-full flex-col md:text-xl text-sm gap-4 items-center ">
             <h3>FreeLancer Address: </h3>
             <span className="flex">
             {employee.userAddress.substring(0,8)}<h4>...</h4>{employee.userAddress.substring(employee.userAddress.length-8,employee.userAddress.length)}

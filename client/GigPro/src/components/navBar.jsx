@@ -12,8 +12,8 @@ const Navbar = ()=>{
     const navigate = useNavigate();
     return(
         <div className="h-10 w-full flex justify-between items-center text-white  ">
-            <div className="bg-black text-blue-300 mb-2 h-1/2">
-            <Menu className="h-full">
+            <div className="bg-orange-400 text-blue-300 mb-2 h-1/2 ml-5">
+            <Menu className="h-full bg-orange-400">
       <MenuHandler>
         <Button>Menu</Button>
       </MenuHandler>

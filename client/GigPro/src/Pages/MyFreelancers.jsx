@@ -5,7 +5,7 @@ import MyFreelancerCard from "../components/myfreelancerCard";
 import Navbar from "../components/navBar";
 const MyFreeLancers = ()=>{
     return(
-        <div className="min-h-full h-screen w-full bg-gray-900  overflow-y-auto ">
+        <div className="min-h-full h-screen w-full bg-green-600  overflow-y-auto ">
 <Navbar/>
            
                 
