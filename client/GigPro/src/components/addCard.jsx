@@ -107,6 +107,7 @@ const AddCard = () => {
       const signer = await provider.getSigner(address);
       console.log("address", address);
       try {
+        setTost(true);
         const GigProContracts = new Contract(
           GigProContract,
           gigproAbi,
@@ -114,7 +115,7 @@ const AddCard = () => {
         );
         let tx = await GigProContracts.addFreeLancer(freelancerAddress, amount);
         let txtx = await tx.wait();
-        setTost(true);
+        
         setTimeout(()=>{
 setTost(false);
         },5000)
@@ -149,7 +150,7 @@ setTost(false);
   return (
     <div className="w-full h-full flex flex-col justify-between rounded-xl bg-black relative">
       <div className="absolute top-0 left-0 z-10 text-gray-200 ">
-        {toastopen?<Tosts message="User Added success" />:""}
+        {toastopen?<Tosts message="Adding User ..." />:""}
        {/* Tosts component is placed here */}
       </div>
       

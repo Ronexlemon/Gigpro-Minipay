@@ -143,7 +143,7 @@ useEffect(()=>{
             
           </div>
           <div className="flex justify-between items-center text-black">
-            <button onClick={()=>{handleEndStream(employee.userAddress)}}  className="inline-flex p-2 justify-start items-center w-100 rounded-full text-red-500">
+            <button onClick={()=>{handleEndStream(employee.userAddress)}}  className="inline-flex p-2 justify-start items-center w-100 rounded-full text-black">
               Revoke
             </button>
             
