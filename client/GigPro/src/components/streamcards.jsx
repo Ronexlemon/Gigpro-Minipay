@@ -83,7 +83,7 @@ const StreamCard = () => {
         return 0;
       }
       const amountInEther = ethers.utils.parseEther(amount);
-       const weiPerSec = 10 * (10^18) / ((365/12) * 24 * 60 * 60)  //ethers.utils.formatEther(amountInWei.toString());
+       const weiPerSec = amount * (10^18) / ((365/12) * 24 * 60 * 60)  //ethers.utils.formatEther(amountInWei.toString());
       const calculatedFlowRate = weiPerSec //monthlyAmount * 3600 * 24 * 30;
       return calculatedFlowRate;
     }
@@ -123,6 +123,9 @@ const StreamCard = () => {
         console.log("Provider not initialized yet");
         return;
         }
+        if(recipient!=undefined && flowRate!=undefined){
+
+        
       const createFlowOperation =daix.createFlow({
         sender: await superSigner.getAddress(),
         receiver: recipient,
@@ -139,7 +142,10 @@ const StreamCard = () => {
       console.log(
         `Congrats - you've just created a money stream!
       `
-      );
+      );}
+      else{
+        console.log("flow rate and recepient undefined");
+      }
     } catch (error) {
       console.log(
         "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
