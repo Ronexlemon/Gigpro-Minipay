@@ -67,7 +67,7 @@ const Navbar = ()=>{
     </Menu> 
             </div>
 <div className=" animate-pulse p-5">
-<button onClick={()=>{navigate("/home")}}>GigPro</button>
+<button onClick={()=>{navigate("/home")}}>StreamPay</button>
 </div>
 <div className="p-5 pt-10">
   {/* {window.ethereum.isMinipay?"":<Web3Button themeVariables={{

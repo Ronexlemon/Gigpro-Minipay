@@ -70,7 +70,7 @@
 //         <input className="border-b border-black bg-transparent focus:border-none text-center" type="text" placeholder="0x74....39749" onChange={(e)=>{setFreelancerAddress(e.target.value)}}/>
 //         </div>
 //         <div className="flex md:justify-evenly md:items-center md:flex-row flex-col ">
-//         <h3 className="text-center md:text-start">Amount in Celo:</h3>
+//         <h3 className="text-center md:text-start">Amount in cUSD:</h3>
 //         <input className="border-b border-black bg-transparent focus:border-none text-center " type="text" placeholder="4000" onChange={(e)=>{setAmount(ethers.utils.parseEther(e.target.value))}}/>
 //         </div>
 //         <div className="flex  justify-between  items-center text-black md:pl-10 md:pr-10 pl-1 pr-1">
@@ -161,7 +161,7 @@ setTost(false);
           <input className="border-b border-gray-200 bg-transparent focus:border-none text-center text-white" type="text" placeholder="0x74....39749" onChange={(e) => { setFreelancerAddress(e.target.value) }} />
         </div>
         <div className="flex md:justify-evenly md:items-center md:flex-row flex-col">
-          <h3 className="text-center md:text-start text-gray-400">Amount in Celo:</h3>
+          <h3 className="text-center md:text-start text-gray-400">Amount in cUSD:</h3>
           <input className="border-b border-gray-200 bg-transparent focus:border-none text-center text-white" type="text" placeholder="4000" onChange={(e) => { setAmount(ethers.utils.parseEther(e.target.value)) }} />
         </div>
         <div className="flex justify-between items-center text-black md:pl-10 md:pr-10 pl-1 pr-1">
