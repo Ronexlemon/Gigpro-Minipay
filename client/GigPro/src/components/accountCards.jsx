@@ -18,8 +18,8 @@ const AccountCards = () => {
   const [downgrade, setdowngrade] = useState(
     false
   );
-  const [usercsdBalance,setUserCusdBalance] = useState();
-  const [usercusdxbalance,setcusdxBalance] = useState();
+  const [usercsdBalance,setUserCusdBalance] = useState(0);
+  const [usercusdxbalance,setcusdxBalance] = useState(0);
   const [toastopen, setTost] = useState(false);
   const [toastDownopen, setDownGradeTost] = useState(false);
   const [toastApproving, setApprovingTost] = useState(false);
