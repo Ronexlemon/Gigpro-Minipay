@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        'send': "url('../src/assets/streeaam.svg')",
+        'send': "url('../src/assets/streeam.svg')",
         
       }
     },
