@@ -11,7 +11,7 @@ const Home = () => {
 
       <div className="flex justify-center items-center h-full w-full">
         <div className="h-1/2 w-1/2  text-green-100">
-          <h1 className="text-5xl font-bold text-center mb-4 text-gray-100">
+          <h1 className="text-5xl font-bold text-center mb-4 text-gray-500">
             Welcome to StreamPay
           </h1>
           <p className="text-xl text-center mb-8 text-white">
