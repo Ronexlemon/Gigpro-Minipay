@@ -7,6 +7,7 @@ import { useAccount } from 'wagmi'
 import { ethers,Contract } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import Tosts from "./Toast";
+import { Toast } from "flowbite-react";
 
 
 const MyFreelancerCard = () => {
@@ -35,7 +36,7 @@ const MyFreelancerCard = () => {
         console.log("myfree",myfree);
         
       }catch(error){
-        alert(`error fetaching${address}`,error);
+        alert('Please add Users');
         console.log(error);
         
       }
@@ -204,6 +205,7 @@ const removeFreeeLancer = async()=>{
  },[address]);
   return (
     <>
+    {/* {freelancers ==null || freelancers == undefined?<Toast message="Please Add Users!!"/>:""} */}
       {freelancers?.map((employee, index) => (
         <div className="w-full h-1/2">
 
