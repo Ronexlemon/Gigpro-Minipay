@@ -10,7 +10,7 @@ const MyFreeLancers = ()=>{
            
                 
                 {/* <SideBar/> */}
-                <div className="flex flex-col ml-10    ">
+                <div className="flex flex-col ml-10 mr-10    ">
                     <MyFreelancerCard/>
                
 

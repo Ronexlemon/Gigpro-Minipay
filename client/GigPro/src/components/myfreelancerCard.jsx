@@ -6,6 +6,7 @@ import gigproAbi from "../ABI/GigPro.json";
 import { useAccount } from 'wagmi'
 import { ethers,Contract } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
+import Tosts from "./Toast";
 
 
 const MyFreelancerCard = () => {
@@ -14,6 +15,9 @@ const MyFreelancerCard = () => {
   const [deleteuser,setDeleteUser] = useState(true);
   const { address, connector, isConnected } = useAccount();
   const [userstreambal,setUserStreamBal]= useState();
+  const [userindex,setUserIndex]= useState(null);
+  
+  
   const  getFreelancers = async()=>{
     if (window.ethereum || window.ethereum.isMiniPay) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -201,21 +205,24 @@ const removeFreeeLancer = async()=>{
   return (
     <>
       {freelancers?.map((employee, index) => (
-        <div key={index} className="flex h-1/4 flex-col mb-10 md:w-full w-3/4 text-gray-200 mb-0 border-b border-red-300    ">
-          <div className="flex md:justify-evenly md:w-full md:flex-row  w-full flex-col md:text-xl text-sm gap-4 items-center ">
-            <h3>FreeLancer Address: </h3>
-            <span className="flex">
-            {employee.userAddress.substring(0,8)}<h4>...</h4>{employee.userAddress.substring(employee.userAddress.length-8,employee.userAddress.length)}
+        <div className="w-full h-1/2">
+
+        
+        <div key={index} className="flex full flex-col mb-10 md:w-3/4   w-full  text-gray-200 mb-0 rounded bg-black text-white  ">
+          <div className="flex   md:justify-evenly md:w-full md:flex-row  w-full flex-col md:text-xl text-sm   h-1/2 items-center text-white mb-8 gap-8 ">
+            <h3 className="text-white">FreeLancer Address: </h3>
+            <span className="flex ">
+            {employee.userAddress.substring(0,15)}<h4>...</h4>{employee.userAddress.substring(employee.userAddress.length-8,employee.userAddress.length)}
             </span>
             
           </div>
-          <div className="flex  md:justify-stretch  justify-between  md:text-xl text-sm w-full gap-2 items-center">
-            <h3>Amount in Cusd: </h3>
-            <span className="">{Number(employee.payAmount/10**18)}</span>
+          <div className="flex  md:justify-stretch  justify-between  md:text-xl text-sm w-full gap-2 items-center text-white ">
+            <h3 className="ml-4">Amount in Cusd: </h3>
+            <span className="mr-4">{Number(employee.payAmount/10**18)}</span>
             
           </div>
-          <div className="flex justify-between items-center text-black">
-            {deleteuser? <button onClick={()=>{setFreelancerAddress(employee.userAddress);setDeleteUser(false)}} className="inline-flex pl-2 justify-center items-center w-100 rounded-full text-red-500">
+          <div className="flex justify-between items-center text-white">
+            {userindex !==index? <button onClick={()=>{setFreelancerAddress(employee.userAddress);setUserIndex(index)}} className="inline-flex pl-2 justify-center items-center w-100 rounded-full text-red-500">
               End Contract
             </button>: <button onClick={()=>{removeFreeeLancer()}} className="inline-flex pl-2 justify-center items-center  w-100 rounded-full text-yellow-500">
               Approve
@@ -225,6 +232,7 @@ const removeFreeeLancer = async()=>{
             
             
           </div>
+        </div>
         </div>
       ))}
     </>

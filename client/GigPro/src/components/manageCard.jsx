@@ -129,8 +129,9 @@ useEffect(()=>{
   return (
     <>
       {freelancers?.map((employee, index) => (
-        <div key={index} className="flex h-1/4 flex-col mb-10 w-full  text-gray-200 mb-0 border-b border-gray-100  ">
-          <div className="flex md:justify-evenly md:w-full md:flex-row justify-center  w-full flex-col  text-sm gap-4 items-center">
+         <div className="w-full h-1/2">
+        <div key={index} className="flex full flex-col mb-10 md:w-3/4   w-full  text-gray-200 mb-0 rounded bg-black text-white    ">
+          <div className="flex   md:justify-evenly md:w-full md:flex-row  w-full flex-col md:text-xl text-sm   h-1/2 items-center text-white mb-8 gap-8">
             <h3>FreeLancer Address: </h3>
             <span className="flex">
             {employee.userAddress.substring(0,18)}<h4>...</h4>{employee.userAddress.substring(employee.userAddress.length-18,employee.userAddress.length)}
@@ -138,16 +139,17 @@ useEffect(()=>{
             
           </div>
           <div className="flex  md:justify-stretch  justify-between   text-sm w-full gap-2 items-center">
-            <h3>Amount in CUSD: </h3>
-            <span className="">{Number(employee.payAmount/10**18)}</span>
+            <h3 className="ml-4">Amount in CUSD: </h3>
+            <span className="mr-4">{Number(employee.payAmount/10**18)}</span>
             
           </div>
           <div className="flex justify-between items-center text-black">
-            <button onClick={()=>{handleEndStream(employee.userAddress)}}  className="inline-flex p-2 justify-start items-center w-100 rounded-full text-black">
+            <button onClick={()=>{handleEndStream(employee.userAddress)}}  className="inline-flex p-2 justify-start items-center w-100 rounded-full text-orange-200">
               Revoke
             </button>
             
           </div>
+        </div>
         </div>
       ))}
     </>

@@ -30,6 +30,7 @@ const StreamCard = () => {
   const [freelancers,setFreeLancers] = useState([]);
   const [openstart,setOpenStart] = useState(false);
   const [openUpdate,setopenUpdate] = useState(false);
+  const [userindex,setUserIndex]= useState(null);
 
   const  getFreelancers = async()=>{
     if (window.ethereum || window.ethereum.isMinipay) {
