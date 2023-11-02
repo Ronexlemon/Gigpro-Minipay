@@ -70,7 +70,7 @@ const Navbar = ()=>{
 <button onClick={()=>{navigate("/home")}}>StreamPay</button>
 </div>
 <div className="p-5 pt-10">
-  {window.ethereum.isMinipay?"":<Web3Button themeVariables={{
+  {window.ethereum.isMiniPay?"":<Web3Button themeVariables={{
     '--w3m-font-family': 'Roboto, sans-serif',
     '--w3m-accent-color': '#FF0000.'
     
